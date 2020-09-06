@@ -1,0 +1,47 @@
+<style>
+    .singlestat-panelm {
+    position: relative;
+    display: table;
+    width: 100%;
+    height: 100%;
+}
+.singlestat-panel-value-containerm {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    font-weight: 500;
+    line-height: 1;
+}
+.singlestat-panel-value-containerm {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    font-weight: 500;
+    line-height: 1;
+}
+@font-face {
+  font-family: "myfont";
+  src:url("{{ url_for('static', filename='fonts/Roboto-Black.ttf',_external=True)}}");
+}
+
+.fnt{
+    font-family: myfont,Roboto,Helvetica Neue,Arial,sans-serif;
+}
+
+</style>
+
+<div class="singlestat-panelm">
+    <div class="singlestat-panel-value-containerm">
+        <span class="singlestat-panel-valuem fnt" style="font-size:30.400000000000002px">
+            {% if color %}
+                <span style="color:#299c46">{{value}}</span>
+            {% else %}
+                <span style="color:#9c2929">{{value}}</span>
+            {% endif %}
+        </span>
+    </div>
+</div>

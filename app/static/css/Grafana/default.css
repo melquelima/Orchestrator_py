@@ -1,0 +1,24 @@
+.singlestat-panel {
+    position: relative;
+    display: table;
+    width: 100%;
+    height: 100%;
+}
+.singlestat-panel-value-container {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    font-weight: 500;
+    line-height: 1;
+}
+.singlestat-panel-value-container {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    font-weight: 500;
+    line-height: 1;
+}

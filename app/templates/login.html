@@ -1,0 +1,61 @@
+<html>
+    <head>
+        <title>Login Page</title>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700">
+        <link rel="stylesheet" href="{{ url_for('static', filename="css/login/default.css") }}">
+        
+    </head>
+</html>
+<body>
+  
+    <div id="wrap">
+        <div id="regbar">
+          <div id="navthing">
+            <h2>Bot Status</h2>
+          </div>
+        </div>
+    </div>
+    <div id="login">
+        <form action="login" method="POST">
+          {{form.csrf_token}}
+          <span class="fontawesome-user"></span>
+          {{form.userName(placeholder="Username")}}
+          {% if form.errors.userName %}
+          <div class="alert alert-danger" role="alert">
+            {{form.errors.userName}}
+          </div>
+          {% endif %}
+          <span class="fontawesome-lock"></span>
+          {{form.password(placeholder="Password")}}
+          {% if form.errors.password %}
+          <div class="alert alert-danger" role="alert">
+            {{form.errors.password}}
+          </div>
+          {% endif %}
+            {% with messages = get_flashed_messages() %}
+              {% if messages %}
+              <div class="alert alert-danger" role="alert">
+                <ul class="flashes">
+                  {% for message in messages %}
+                  <li>{{message}}</li>
+                  {% endfor %}
+                </ul>
+              </div>
+              {% endif %}
+            {% endwith %}
+          <input type="submit" value="Login">
+  
+          </form>
+          {% if form.errors.password %}
+          <div class="alert alert-danger" role="alert">
+            {{form.errors.password}}
+          </div>
+          {% endif %}
+      </div>
+    <!--
+        <link rel="stylesheet" href="{{ url_for('static', filename="css/bootstrap.min.css") }}">
+        <script src="{{ url_for('static', filename="js/bootstrap.min.js") }}"></script>
+    -->
+</body>
+
+    

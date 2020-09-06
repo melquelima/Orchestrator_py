@@ -1,0 +1,250 @@
+<style>
+    @font-face {
+  font-family: "Roboto";
+  src:url("{{ url_for('static', filename='fonts/Roboto.woff2')}}");
+}
+body {
+        font-family: Roboto,Helvetica Neue,Arial,sans-serif;
+        font-size: 13px !important;
+        line-height: 1.5;
+        margin: auto;
+        color: #d8d9da;
+        overflow-y: hidden; /* Hide vertical scrollbar */
+        overflow-x: hidden; /* Hide horizontal scrollbar */
+    }
+    div {
+        display: block;
+    }
+    th {
+        font-weight: 500;
+    }
+    .panel-content {
+        height: -webkit-calc(100% - 28px);
+        height: calc(100% - 28px);
+        width: 100%;
+        position: relative;
+        overflow-y: auto; /* Hide vertical scrollbar */
+        overflow-x: hidden;
+    }
+    .panel-height-helper {
+        display: block;
+        height: 100%;
+    }
+    .table-panel-container {
+        padding-top: 2.2em;
+        position: relative;
+    }
+    .datapoints-warning {
+        pointer: none;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        z-index: 10;
+        width: 200px;
+        text-align: center;
+        cursor: auto;
+        padding: 10px;
+    }
+    .small, small {
+        font-size: 12px;
+        font-weight: 400;
+    }
+    .grafana-tip {
+        padding-left: 5px;
+    }
+    .fa {
+        display: inline-block;
+        font: normal normal normal 14px/1 FontAwesome;
+        font-size: inherit;
+        text-rendering: auto;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+    .table-panel-header-bg {
+        background: -webkit-linear-gradient(315deg,#2f2f32,#262628);
+        background: -o-linear-gradient(315deg,#2f2f32,#262628);
+        background: linear-gradient(135deg,#2f2f32,#262628);
+        border-top: 2px solid #161719;
+        border-bottom: 2px solid #161719;
+        height: 2em;
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+    }
+    .table-panel-scroll {
+        overflow-y: auto; /* Hide vertical scrollbar */
+        overflow-x: hidden;
+    }
+    .table-panel-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    table {
+        background-color: rgba(0,0,0,0);
+        border-spacing: 0;
+    }
+    thead {
+        display: table-header-group;
+        vertical-align: middle;
+        border-color: inherit;
+    }
+    tbody {
+        font-family: Roboto,Helvetica Neue,Arial,sans-serif;
+        display: table-row-group;
+        vertical-align: middle;
+        border-color: inherit;
+    }
+    tr {
+        display: table-row;
+        vertical-align: inherit;
+        border-color: inherit;
+    }
+    .table-panel-table th {
+        padding: 0;
+    }
+    th {
+        font-family: Roboto,Helvetica Neue,Arial,sans-serif;
+        font-weight: 500;
+    }
+    caption, th {
+        text-align: left;
+    }
+    td, th {
+        padding: 0;
+        font-size: 13px;
+    }
+    .table-panel-table th:first-child .table-panel-table-header-inner {
+        padding-left: 15px;
+    }
+    .table-panel-table-header-inner {
+        padding: .6em 0 .45em 1.1em;
+        text-align: left;
+        color: #33b5e5;
+        position: absolute;
+        top: 0;
+    }
+    .pointer {
+        cursor: pointer;
+    }
+    .table-panel-table td {
+        padding: .45em 0 .45em 1.1em;
+        border-bottom: 2px solid #161719;
+        border-right: 2px solid #161719;
+        
+    }
+    .table-panel-width-hack {
+        visibility: hidden;
+        height: 0;
+        line-height: 0;
+    }
+    .no-overlay-scrollbar ::-webkit-scrollbar{
+    width:8px;
+    height:8px
+}
+.no-overlay-scrollbar ::-webkit-scrollbar:hover{
+    height:8px
+}
+.no-overlay-scrollbar ::-webkit-scrollbar-button:end:increment,.no-overlay-scrollbar ::-webkit-scrollbar-button:start:decrement{
+    display:none
+}
+.no-overlay-scrollbar ::-webkit-scrollbar-button:horizontal:decrement,.no-overlay-scrollbar ::-webkit-scrollbar-button:horizontal:increment{
+    display:none
+}
+.no-overlay-scrollbar ::-webkit-scrollbar-button:vertical:decrement,.no-overlay-scrollbar ::-webkit-scrollbar-button:vertical:increment{
+    display:none
+}
+.no-overlay-scrollbar ::-webkit-scrollbar-button:horizontal:decrement:active,.no-overlay-scrollbar ::-webkit-scrollbar-button:horizontal:increment:active{
+    background-image:none
+}
+.no-overlay-scrollbar ::-webkit-scrollbar-button:vertical:decrement:active,.no-overlay-scrollbar ::-webkit-scrollbar-button:vertical:increment:active{
+    background-image:none
+}
+.no-overlay-scrollbar ::-webkit-scrollbar-track-piece{
+    background-color:rgba(0,0,0,0)
+}
+.no-overlay-scrollbar ::-webkit-scrollbar-thumb:vertical{
+    height:50px;
+    background:-webkit-gradient(linear,left top,right top,color-stop(0,#404357),color-stop(100%,#424345));
+    border:1px solid #000
+}
+.no-overlay-scrollbar ::-webkit-scrollbar-thumb:horizontal{
+    width:50px;
+    background:-webkit-gradient(linear,left top,left bottom,color-stop(0,#404357),color-stop(100%,#424345));
+    border:1px solid #000
+}
+.theme-dark .react-grid-item>.react-resizable-handle:after{
+    border-right:2px solid #555;
+    border-bottom:2px solid #555
+}
+.minwidth{
+    min-width: 60px;
+}
+
+    </style>
+    
+    
+  <body class="theme-dark no-overlay-scrollbar">  
+    <div class="panel-content">
+        <ng-transclude class="panel-height-helper">
+    <div class="table-panel-container">
+    <div class="table-panel-header-bg" ng-show="ctrl.table.rows.length"></div>
+    <div class="table-panel-scroll" ng-show="ctrl.table.rows.length" style="max-height: 313px;">
+        <table class="table-panel-table">
+            <thead>
+                <tr>
+                    <th ng-repeat="col in ctrl.table.columns" ng-if="!col.hidden">
+                        <div class="table-panel-table-header-inner pointer" ng-click="ctrl.toggleColumnSort(col, $index)">
+                            botName
+                        </div>
+                    </th>
+                    <th ng-repeat="col in ctrl.table.columns" ng-if="!col.hidden">
+                        <div class="table-panel-table-header-inner pointer" ng-click="ctrl.toggleColumnSort(col, $index)">
+                            type
+                        </div>
+                    </th>
+                    <th ng-repeat="col in ctrl.table.columns" ng-if="!col.hidden">
+                        <div class="table-panel-table-header-inner pointer" ng-click="ctrl.toggleColumnSort(col, $index)">
+                            exception
+                        </div>
+                    </th>
+                    <th ng-repeat="col in ctrl.table.columns" ng-if="!col.hidden">
+                        <div class="table-panel-table-header-inner pointer" ng-click="ctrl.toggleColumnSort(col, $index)">
+                            date
+                        </div>
+                    </th>
+                    <th ng-repeat="col in ctrl.table.columns" ng-if="!col.hidden">
+                        <div class="table-panel-table-header-inner pointer" ng-click="ctrl.toggleColumnSort(col, $index)">
+                            qtd
+                        </div>
+                    </th>
+                    <th ng-repeat="col in ctrl.table.columns" ng-if="!col.hidden" class="minwidth">
+                        <div class="table-panel-table-header-inner pointer" ng-click="ctrl.toggleColumnSort(col, $index)">
+                            backAt
+                        </div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in lista %}
+                <tr>
+                    <td>{{item.botName.botName}}</td>
+                    <td>{{item.description.description}}</td>
+                    <td>{{item.exception}}</td>
+                    <td>{{item.datetime.strftime("%d-%m %H:%M:%S")}}</td>
+                    <td>{{item.recurrence}}</td>
+                    <td>{{item.backAt.strftime("%d-%m %H:%M:%S") if item.backAt else '------'}}</td>
+                </tr>
+                {% endfor%}
+            </tbody>
+        </table>
+    </div>
+    </div>
+    {% if not lista %}
+    <div class="datapoints-warning ng-hide">
+        <span class="small">
+            No data to show <i class="grafana-tip fa fa-question-circle" bs-tooltip="'Nothing returned by data query'" data-original-title="" title=""></i>
+        </span>
+    </div>
+    {% endif %}
+</body>
