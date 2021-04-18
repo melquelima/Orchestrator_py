@@ -26,11 +26,16 @@ class Users(db.Model):
     id = Column(Integer,primary_key=True)
     userName = Column(String,unique=True)
     password = Column(String)
+    admin = Column(Boolean)
 
     def __init__(self,userName,password):
         self.userName = userName
         self.password = password
-    
+
+    @property
+    def is_admin(self):
+        return self.admin
+
     def __setattr__(self, name, value):
         object.__setattr__(self, name, value)
         if name != "_sa_instance_state":
@@ -56,7 +61,7 @@ class Bot(db.Model):
     __tablename__ = "bot"
 
     id = Column(Integer,primary_key=True)
-    botName =   Column(String)
+    botName =   Column(String,unique=True)
     id_Env =    Column(Integer,ForeignKey('Enviorment.id'))
     envName =   db.relationship("Enviorment",foreign_keys=id_Env)
     ping =      Column(DateTime)
@@ -65,9 +70,11 @@ class Bot(db.Model):
     workingTimeout =   Column(Time)
     idChat =    Column(String)
     flagOff=    Column(Boolean,default=False)
+    descricao = Column(String)
+    token = Column(String)
     #roles = db.relationship("Status", backref="bot", lazy="dynamic",secondary = "status")
     
-    def __init__(self,botName,id_Env,ping,working,pingTimeout,workingTimeout,flagOff=False):
+    def __init__(self,botName,id_Env,ping,working,pingTimeout,workingTimeout,idChat,token=None,flagOff=False):
         self.botName = botName
         self.id_Env = id_Env
         self.ping = ping
@@ -75,11 +82,20 @@ class Bot(db.Model):
         self.pingTimeout = pingTimeout
         self.workingTimeout = workingTimeout
         self.flagOff = flagOff
+        self.idChat = idChat
 
-    def __setattr__(self, name, value):
-        object.__setattr__(self, name, value)
-        if name != "_sa_instance_state":
-            db.session.commit()
+    def save(self):
+        if self.id:
+            db.session.add(self)
+        db.session.commit()
+
+    def delete(self):
+        db.session.rollback()
+        db.session.delete(self)
+        db.session.commit()
+
+    def pingMinutesTimeout(self):
+        return (self.pingTimeout.hour * 60) + self.pingTimeout.minute
 
     @property
     def is_online(self):
@@ -103,10 +119,32 @@ class Bot(db.Model):
                 #db.session.commit()
             else:
                 png,timeout = wkng
-        tempo=    (now()-png).seconds
+
+        tempo=    (now()-png).seconds #tempo desde o ultimo ping
         tmout=  datetime.combine(date.min,timeout) - datetime.min #convert to timedelta
         pingsts = tempo < tmout.seconds + time
+
+        if pingsts:
+            a = 1
+
         return pingsts
+
+    #executa quando o status muda de offline para online
+    def onceWhenOnline(self,time,func,args={}):
+        sts = self.is_online_time(time)
+        if self.flagOff and sts:
+            func(**args)
+            self.flagOff = False
+            self.save()
+
+    #executa quando o status muda de online para offline
+    def onceWhenOffline(self,time,func,args={}):
+        sts = self.is_online_time(time)
+        if not self.flagOff and not sts:
+            func(**args)
+            self.flagOff = True
+            self.save()
+
 
     def __repr__(self):
         return "<Bot %r>" % self.envName
@@ -186,28 +224,66 @@ class Proc(db.Model):
     def __repr__(self):
         return "<Proc %r>" % self.id
 
+class Notepad(db.Model):
+    __tablename__ = "notepad"
+
+    id = Column(Integer,primary_key=True)
+    id_bot = Column(Integer,ForeignKey('bot.id'))
+    name =   Column(String,unique=True,nullable=False)
+    text =  Column(String)
+    bot = db.relationship("Bot",foreign_keys=id_bot)
+    
+    def __init__(self,id_bot,name,text):
+        self.id_bot = id_bot
+        self.name = name
+        self.text = text
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def delete(self):
+        db.session.rollback()
+        db.session.delete(self)
+        db.session.commit()
+
+    def __repr__(self):
+        return "<NotePad %r>" % self.envName
+
+
+
 
 class UserSchema(ma.ModelSchema):
     class Meta:
         model = Users
 
 class EnvSchema(ma.ModelSchema):
-    class Meta:
-        model = Enviorment
+    id = fields.Integer()
     envName = fields.String(data_key="Name")
 
 class BotSchema(ma.Schema):
     id = fields.Integer()
+    idChat = fields.Integer()
     botName = fields.String()
     #id_Env = fields.Integer()
     #envName = fields.Nested(EnvSchema)
     envName = fields.Nested(EnvSchema,data_key="Env") #fields.Nested(EnvSchema,only=["envName","id"])
-    ping =    fields.Time()
-    timeout = fields.Time()
+    ping =    fields.DateTime(format='%d/%m/%y %H:%M')
+    pingTimeout = fields.Time()
+    pingMinutesTimeout = fields.Function(lambda obj:obj.pingMinutesTimeout())
     working = fields.String()
+    descricao = fields.String()
     flagOff = fields.Boolean()
+    token = fields.String()
+
     
 
 class EnvSchema2(ma.ModelSchema):
     envName = fields.String(data_key="Name")
     bot = fields.Nested(BotSchema)
+
+class NotepadSchema(ma.ModelSchema):
+    id = fields.Integer()
+    bot = fields.Nested(BotSchema)
+    name = fields.String()
+    text = fields.String()

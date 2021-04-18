@@ -4,7 +4,9 @@ from flask import render_template,request
 from app.models.tables import Bot,Type,Log
 from sqlalchemy import desc,or_
 from functools import wraps
+from datetime import datetime as dt
 from sqlalchemy.inspection import inspect
+import json
 
 def post_id_validation(req,cls,field=None,order=None):
     id = req.form.get("id")
@@ -41,7 +43,7 @@ def get_id_validation(req,cls,field=None,order=None):
 
 def addLog(bt,tp,exception):
     #bt migth be "1" or bot Object
-    if type(bt) == str:
+    if type(bt) == str or type(bt) == int :
         bt = Bot.query.get(bt)
         if not bt: return False, f"bot '{bt}' not found!"
 
@@ -65,10 +67,6 @@ def addLog(bt,tp,exception):
         lg = Log(bt.id,idLog.id,exception,now(),bt.ping,1,None)
         db.session.add(lg)
         db.session.commit()
-        
-    header = "<b>===={}====</b>\n".format(bt.botName)
-    msg = header + exception
-    if bt.idChat: Telbot.sendMessage(bt.idChat,msg,parse_mode='HTML')
     return True,"OK"
 
 def validate_field2(cls,value,like=None,field=None,order=None):
@@ -81,7 +79,7 @@ def validate_field2(cls,value,like=None,field=None,order=None):
     else:
         value = value if not like else like.format(value)
         _field = getattr(cls,field).like(value)
-        en = cls.query.filter(_field).order_by(order).all()
+        en = cls.query.filter(_field).order_by(order).first()
 
     return en,"OK" if en else "couldn't find '{}' value at '{}' column".format(value,field)
 
@@ -90,29 +88,57 @@ def retContent(value,jsn,error=False):
     contentJson = "json" in xstr(request.headers.get("Content-Type"))
     return jsn if contentJson else render_template("grafana1.html",value=value,color=error)
 
-#decorator
-def fields_required(lista):
+def fields_required(lista,methods="*",out="fields"):
     def decorator(function):
         @wraps(function)
         def wrapper(*args, **kwargs):
             xstr = lambda s: s or ""
             contentJson = "json" in xstr(request.headers.get("Content-Type"))
 
-            if request.method == "GET":
-                fields = request.args.to_dict()
-            elif request.method == "POST":
-                fields =  request.json if contentJson else request.form.to_dict()
-            
-            notfound = [x for x in lista if not x in fields]
-            if notfound:
-                return "couldn't find these fields:\n\t" + "\n\t".join(notfound)
+            if methods == "*" or request.method in methods:
+                if request.method == "GET":
+                    fields = request.args.to_dict()
+                elif request.method in ["POST","PUT","DELETE","DEL","CREDIT"]:
+                    data = request.get_json(force=True) or request.get_json() or request.form.to_dict()
+                    fields =  request.json if contentJson else data
+                
+                lista2 = lista if isinstance(lista,list) else list(lista.keys())
 
-            result = function(fields=fields,*args, **kwargs)
-            return result
+                notfound = [x for x in lista2 if not x in fields]
+                if notfound:
+                    return "campos nao encontrados!:\n\t" + "\n\t".join(notfound),400
+                
+                if isinstance(lista,dict):
+                    for k,v in lista.items():
+                        
+                        if v == float and isinstance(fields[k],int):
+                            fields[k] = float(fields[k])
+
+                        if not isinstance(fields[k],v):
+                            tipo = str(v).split("'")[1]
+                            return f"o campo '{k}' nao corresponde ao tipo ({tipo})",400
+
+
+                kwargs[out] = fields
+                result = function(*args, **kwargs)
+                return result
+            else:
+                kwargs[out] = []
+                return function(*args, **kwargs)
+
         return wrapper
     return decorator
 
+def mallowList(schema,lista):#coverte dados da api para formtado jdson
+    sc = schema()
+    return [json.loads(sc.dumps(x)) for x in lista if sc.dumps(x) != '{}']
 
+def Datevalidate(date_text,formt): #valida formato de data
+    try:
+        dt.strptime(date_text, formt)
+        return True,dt.strptime(date_text,formt)
+    except ValueError:
+        return  False,""
 
 def validate_field(cls,value,like=None,field=None,order=None,fixedjson=None,errorMsg=None):
     def decorator(function):

@@ -1,0 +1,32 @@
+{% macro field(form,data,placeholder="",class="") %}
+    {{getattr(form,data)(placeholder=placeholder,class=class)}}
+    {% if data in form.errors %}
+        <div class="alert alert-danger" role="alert" style="width: 100%;margin-top: 5px;" >
+        {{ form.errors[data][0] }}
+        </div>
+    {% endif %}
+{% endmacro %}
+
+
+
+{% macro fieldForm1(form,data,placeholder="",class="",icon="") %}
+    <div class="form-group">
+        <div class="input-group">
+            <div class="input-group-addon"><i class="fa fa-{{ icon }}"></i></div>
+            {{ field(form,data,placeholder,class) }}
+        </div>
+    </div>
+{% endmacro %}
+
+
+{% macro fieldForm2(form,data,placeholder="",class="",icon="") %}
+    <li class="list-group-item">
+        <a href="#"> <i class="fa fa-{{icon}}"></i>
+            <span ng-hide="hideFields">{{ getattr(form,data).data }} </span>
+            <span ng-show="hideFields">
+                {{ field(form,data,placeholder,class) }} 
+            </span>
+            <span class="pull-right">{{ placeholder }}</span>
+        </a>
+    </li>
+{% endmacro %}

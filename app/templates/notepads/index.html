@@ -1,0 +1,162 @@
+{% extends './base/base.html'%}
+
+
+{% from './indicadores/indicadores.html' import smallBox %}
+{% from './macros/default/address.html' import src %}
+
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename="css/vendors/font-awesome/css/font-awesome.min.css") }}">
+<style>
+
+  a,
+  button {
+    text-decoration: none;
+    outline: none !important;
+    color: #878787;
+    -webkit-transition: all 0.25s ease;
+    transition: all 0.25s ease;
+  }
+  
+  a:focus,
+  a:hover {
+    text-decoration: none;
+    color: #000;
+  }
+  
+p {
+	font-size: 16px;
+	font-family: 'Open Sans' sans-serif;
+	font-weight: 400;
+	line-height: 24px;
+	color: #878787;
+}
+
+p:focus {
+	border: none;
+	outline: 0;
+}
+
+.plus{
+  color: #343a40ad;
+    font-size: 2em;
+}
+.list-group-item{
+  cursor:pointer
+}
+
+</style>
+
+{% endblock %}
+
+{% block extra %}
+<li class="breadcrumb-item">
+<div class="form-group">
+  <div class="input-group" id="dt">
+    <button type="button" class="btn btn-default float-right" id="daterange-btn">
+      <i class="far fa-calendar-alt"></i> Selecione o Período
+      <i class="fas fa-caret-down"></i>
+    </button>
+  </div>
+</div>
+</li>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid" ng-controller="NotepadsCtrl" ng-cloak>
+  <div class="row">
+    <div class="col-md-3">
+      <aside class="profile-nav alt">
+        <section class="card">
+          <div class="card-header user-header alt bg-dark">
+            <div class="media">
+              <a href="#">
+                <img class="align-self-center mr-3" style="width:85px; height:85px;" alt="" {{ src("dist/img/notepad.png") }}>
+              </a>
+              <div class="media-body">
+                <h2 class="text-light display-6">Note pads</h2>
+                <p>Lista de notepads</p>
+              </div>
+            </div>
+          </div>
+          
+          {{fields.loading(ng_show = "loading")}}
+          {{fields.empty(ng_show="!notepads.length && !loading")}}
+
+          <ul class="list-group list-group-flush ng-cloak" ng-show="notepads.length">
+
+            <li class="list-group-item" ng-repeat="list in notepads" ng-click="select(list)">
+              <span>
+                <i class="fa fa-pencil-square-o"></i> [{list.name}] <span class="fa fa-trash pull-right"></span>
+              </span>
+            </li>
+            <li class="list-group-item" style="text-align:center">
+              <span>
+                <i class="fa fa-plus-circle plus"data-toggle="modal" data-target="#modal-novaLista"></i>
+              </span>
+            </li>
+            </ul>
+            
+          </section>
+        </aside>
+    </div>
+
+    <div class="col-md-9">
+      <aside class="profile-nav alt">
+        <section class="card">
+          <div class="card-header user-header alt bg-dark">
+            <div class="media">
+            
+              <div class="media-body">
+                <h2 class="text-light display-6">Descricao - [{ selected.name }]</h2>
+                <p> </p>
+              </div>
+            </div>
+          </div>
+
+          <div style="padding:10px">
+            <pre>[{selected.text}]</pre>
+          </div>
+
+          
+        </section>
+      </aside>
+    </div>
+
+  </div>
+
+<!-- ==================================MODALS=============================================== -->
+<div class="modal fade bd-example-modal-lg" id="modal-novaLista" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false" >
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-color2">
+        <h4 class="modal-title" id="myLargeModalLabel">Nova Lista</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="card-body">
+          <div class="row">
+            {{fields.textField(12,"Nome","Insira o nome da nova lista","listName") }}
+          </div>
+
+          {{fields.button("Salvar","novaLista()","margin-top:80px","loadingSalvar") }}
+
+      </div>
+      </div>
+      
+    </div>
+  </div>
+</div>
+
+
+</div>
+
+{% endblock %}
+
+
+
+{% block js %}
+<script src="{{ randomJs(url_for('static', filename="angularJS/todosAngular.js")) }}" data-semver="1.4.3"></script>
+{% endblock %}
+

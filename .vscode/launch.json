@@ -8,8 +8,9 @@
             "name": "Python: Arquivo Atual",
             "type": "python",
             "request": "launch",
-            "program": "${file}",
-            "console": "integratedTerminal"
+            "program": "${workspaceFolder}\\run2.py",
+            "console": "integratedTerminal",
+            "args" : ["runserver"]
         }
     ]
 }

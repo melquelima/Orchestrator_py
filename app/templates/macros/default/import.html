@@ -1,0 +1,22 @@
+<!-- 
+    importa um arquivo js da pasta static
+    Ex:
+        {# jsFile('vendors/style/js/plugins.js') #}
+-->
+
+{% macro jsFile(file) %}
+    <script src="{{ url_for('static', filename=file) }}"></script>
+{% endmacro %}
+
+
+<!-- 
+    importa um arquivo css da pasta static
+    Ex:
+        {# cssFile('vendors/style/css/plugins.css') #}
+-->
+
+{% macro cssFile(file) %}
+    <link href="{{ url_for('static', filename=file) }}" rel="stylesheet">
+{% endmacro %}
+
+

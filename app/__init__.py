@@ -3,6 +3,7 @@ from flask_cors import CORS, cross_origin
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
+from flask_socketio import SocketIO,send,emit
 import telepot as tp
 import os
 
@@ -13,10 +14,10 @@ db = SQLAlchemy(app)
 lm = LoginManager()
 lm.init_app(app)
 lm.needs_refresh_message = (u"Session timedout, please re-login")
-
+socketio = SocketIO(app,ping_timeout=5, ping_interval=2)
 
 ma = Marshmallow(app)
-adjustTime = True,3
+adjustTime = False,3
 Telbot = tp.Bot("1238447435:AAGufd338Uwk7Muub6r7-NeF_jjAULwi3Fs")
 if os.environ.get('WERKZEUG_RUN_MAIN') == 'true':
     print("-----------------------------")
@@ -24,7 +25,13 @@ if os.environ.get('WERKZEUG_RUN_MAIN') == 'true':
 #Telbot.message_loop(lambda msg:msg)
 #self.bot.message_loop(self.ChatBotConfig)
 
-from app.controllers import default,api,login,thread
+from app.models.filters.filters import *
+from app.models.filters.contexts import *
+from app.models.filters.inject import *
+from app.controllers.Api import api,tables
+from app.controllers.Routes import login,default,robos,notepads
+from app.controllers.Service import thread,socket
+#from app.controllers.Service.socket import *
 
 
 

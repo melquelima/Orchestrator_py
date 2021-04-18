@@ -1,0 +1,30 @@
+
+<!-- 
+    busca da basta static 
+
+-->
+
+{% macro href(file) %}
+href="{{url_for('static', filename=file)}}"
+{% endmacro %}
+
+<!-- qualquer href -->
+{% macro href2(file) %}
+href="{{file}}"
+{% endmacro %}
+
+{% macro url(file) %}
+    url('{{url_for('static', filename=file)}}')
+{% endmacro %}
+
+<!-- 
+    traz o url simples puxando da static
+-->
+{% macro urlPuro(file) %}
+   {{url_for('static', filename=file)}}
+{% endmacro %}
+
+<!-- coloca o scr na tag puxando do static -->
+{% macro src(file) %}
+    src="{{url_for('static', filename=file)}}"
+{% endmacro %}

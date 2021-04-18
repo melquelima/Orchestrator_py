@@ -1,0 +1,84 @@
+<aside class="main-sidebar sidebar-dark-primary elevation-4 bg-color">
+    <!-- Brand Logo -->
+    <a href="index3.html" class="brand-link">
+      <img src="{{ url_for('static', filename="dist/img/logo2.png") }}" alt="AdminLTE Logo" class="brand-image"
+           style="opacity: .8">
+      <span id="nameLogo" class="brand-text font-weight-light"> </span>
+    </a>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <!-- Sidebar user panel (optional) -->
+      <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+        <div class="image">
+          <img src="{{ url_for('static', filename="dist/img/letras/" + current_user.userName[0].upper() + ".png") }}" class="img-circle elevation-2" alt="User Image">
+        </div>
+        <div class="info">
+          <a href="#" class="d-block">{{ current_user.userName }}</a>
+        </div>
+      </div>
+
+      <!-- Sidebar Menu -->
+      <nav class="mt-2">
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+          <!-- Add icons to the links using the .nav-icon class
+               with font-awesome or any other icon font library -->
+        <!-- Maquinas -->
+        <li class="nav-header">DASHBOARDS</li>
+        
+        <li class="nav-item">
+          {{ macros.menuHeader("Indicadores","fa-chart-pie","/",False) }}
+        </li>
+
+        <li class="nav-header">ITERAÇÕES</li>
+        <li class="nav-item has-treeview {{ activeMenu2(['robos','novorobo','logs']) }}">
+
+          {{ macros.menuHeader("Robôs","fa-gamepad") }}
+          <ul class="nav nav-treeview">
+            {{ macros.menuitem("Todos","/robos") }}
+            {{ macros.menuitem("Novo","/novorobo",True) }}
+            {{ macros.menuitem("Notepads","/notepads") }}
+          </ul>
+        </li>
+          
+        {% if current_user.is_admin %}
+          <li class="nav-header">CONFIGURACOES</li>
+          <li class="nav-item has-treeview {{ activeMenu2(['novoLocador']) }}">
+            {{ macros.menuHeader("Locadores",'fa-house-user') }}
+
+            <ul class="nav nav-treeview">
+              {{ macros.menuitem("Novo Locador","/novoLocador") }}
+              {{ macros.menuitem("Locadores","/Locadores") }}
+            </ul>
+          </li>
+        {% endif %}
+
+
+        <li class="nav-header">USUARIOS</li>
+        <li class="nav-item has-treeview {{ activeMenu2(['novoUsuario','usuarios']) }}">
+          {{ macros.menuHeader("Usuarios","fa-users") }}
+
+          <ul class="nav nav-treeview">
+            {{ macros.menuitem("Novo Usuário","/novoUsuario") }}
+            {{ macros.menuitem("Usuários","/usuarios") }}
+          </ul>
+
+        </li>
+
+        <li class="nav-item">
+          {{ macros.menuHeader("Carregar","fa-credit-card","/carregar",False) }}
+        </li>
+        
+
+        <li class="nav-item"><hr style="background-color: #4f5962;"></li>
+        <li class="nav-item">
+          {{ macros.menuHeader("Sair","fa-sign-out-alt fa-rotate-180","/logout",False) }}
+        </li>
+
+
+        </ul>
+      </nav>
+      <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+  </aside>

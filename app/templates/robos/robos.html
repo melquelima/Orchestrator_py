@@ -1,0 +1,202 @@
+{% extends './base/base.html'%}
+
+
+{% block css %}
+<style>
+  td{
+    text-align: center;
+  }
+
+  .bg-success,.bg-danger{
+    height: 25px;
+    vertical-align: middle;
+    padding-top: 6px;
+    width: auto;
+  }
+
+  div>span{
+    /* font-size: large !important; */
+    width: 90% !important;
+    cursor: pointer;
+  }
+  th{
+    text-align: center;
+  }
+
+  span>i{
+    font-size: 1.5em;
+  }
+
+  span:hover >i{
+   color:white;
+  }
+
+  @media screen and (max-width: 768px) {
+    div>span{
+    /* font-size: large !important; */
+    width: 100%;
+  }
+
+  }
+
+
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container" ng-controller="TodasCtrl">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header bg-color2">
+          <h3 class="card-title">Todos os Robôs</h3>
+
+          <div class="card-tools">
+            <div class="input-group input-group-sm" style="width: 150px;">
+              <input type="text" name="table_search" class="form-control float-right" placeholder="Pesquisar" ng-model="search">
+
+              <div class="input-group-append">
+                <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body table-responsive p-0">
+
+          {{fields.loading(ng_show = "loading")}}
+          {{fields.empty(ng_show="!lista.length && !loading")}}  
+
+         
+
+          <table class="table table-hover text-nowrap ng-cloak" ng-show="lista.length">
+            <thead>
+              <tr>
+                <th>Ambiente</th>
+                <th>Nome</th>
+                <th>Timeout</th>
+                <th>LastPing</th>
+                <th>TelegramChat</th>
+                <th>Descrição</th>
+                <th ng-show="FROMBACKEND.admin" >Editar</th>
+                <th ng-show="FROMBACKEND.admin" >Deletar</th>
+              </tr>
+            </thead>
+            <tbody ng-cloak>
+              <tr ng-repeat="x in lista | filter : search">
+                <td>[{x.Env.Name}]</td>
+                <td>[{x.botName}]</td>
+                <td>[{x.pingTimeout}]</td>
+                <td>[{x.ping}]</td>  
+                <td>[{ x.idChat}]</td>
+                <td>[{ x.descricao}]</td>
+                <td ng-show="FROMBACKEND.admin" ><div><span class="badge bg-warning" ng-click="{{ 'select(x)' if current_user.is_admin else 'editarStatus(x)' }}"><i class="fas fa-edit"></i></span></div></td>
+                <td ng-show="FROMBACKEND.admin" ><div><span class="badge bg-danger" ng-click="select(x)"><i class="fas fa-times"></i></span></div></td>
+              </tr>
+            </tbody>
+          </table>
+         </div>
+        <!-- /.card-body -->
+      </div>
+      <!-- /.card -->
+    </div>
+  </div>
+
+<!-- ==================================MODALS=============================================== -->
+
+  <div class="modal fade bd-example-modal-lg" id="modal-editar" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false" >
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header bg-color2">
+          <h4 class="modal-title" id="myLargeModalLabel">Editar Robô</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="card-body">
+            <div class="row">
+              {{fields.selectField(3,"Ambiente","Selecione um Ambiente","x.Name for x in envs","Selected.Env")}}
+              {{fields.textField(3,"Nome","Insira o nome do robô","Selected.botName") }}
+              {{fields.numberField(3,"TelegramChat","Insira o id","Selected.idChat") }}
+              {{fields.numberField(3,"Timeout (minutos)","Insira o timeout","Selected.pingMinutesTimeout") }}
+            </div>
+            <div class="row">
+              {{fields.textAreaField(12,"Descrição",3,"Descrição","Selected.descricao") }}
+            </div>
+            <div class="row">
+              {{fields.textAreaField(8,"Token",3,"","token") }}
+              <div class="col-sm-4">
+                <div class="form-group">
+                  <label> </label>
+                  {{fields.buttonSquare("Gerar Token","updateToken()","","tokenLoading") }}
+                </div>
+              </div>
+            </div>
+
+            {{fields.button("Salvar","AlterarMaquina()","margin-top:80px","loadingSalvar") }}
+
+        </div>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade bd-example-modal-lg" id="modal-novoTema" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header bg-color2">
+          <h4 class="modal-title" id="myLargeModalLabel">Novo Tema</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Nome</label>
+            <input type="text" class="form-control" placeholder="Insira o nome do tema" ng-model="NovoTemaValue">
+          </div>
+
+          {{ fields.button("CADASTRAR TEMA","cadastraTema(NovoTemaValue)","","loadingTema") }}
+
+        </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade bd-example-modal-lg" id="modal-status" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header bg-color2">
+          <h4 class="modal-title" id="myLargeModalLabel">Novo Tema</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            {{fields.checkField(3,"Ativo","ATIVA","INATIVA","Selected.ativa",id="toggle-demo2")}}
+          </div>
+          
+          {{ fields.button("Salvar Status","salvarStatus()","","loadingSalvar") }}
+
+        </div>
+        
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+
+
+{% block js %}
+
+<script src="{{ randomJs(url_for('static', filename="angularJS/todosAngular.js")) }}" data-semver="1.4.3"></script>
+<script>
+  //$("#modal-editar").modal("show")
+</script>
+{% endblock %}

@@ -1,0 +1,36 @@
+<!-- ./wrapper -->
+<!-- jQuery -->
+<script src="{{ url_for('static', filename="plugins/jquery/jquery.min.js") }}"></script>
+<!-- jQuery UI 1.11.4 -->
+<script src="{{ url_for('static', filename="plugins/jquery-ui/jquery-ui.min.js") }}"></script>
+<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+<script>
+  $.widget.bridge('uibutton', $.ui.button)
+</script>
+<!-- Bootstrap 4 -->
+<script src="{{ url_for('static', filename="plugins/bootstrap/js/bootstrap.bundle.min.js") }}"></script>
+
+<!-- overlayScrollbars -->
+<script src="{{ url_for('static', filename="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js") }}"></script>
+<!-- AdminLTE App -->
+<script src="{{ url_for('static', filename="dist/js/adminlte.js") }}"></script>
+<script src="{{ url_for('static', filename="dist/js/angular/angular.min.js") }}" data-semver="1.4.3"></script>
+<!-- TOOGLE CHECKBOX -->
+<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>,
+<!-- MASK INPUT -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.15/jquery.mask.min.js"></script>
+<!-- TOASTR ALERTS -->
+<script src="{{ randomJs(url_for('static', filename="toastr/toastr.min.js")) }}"></script>
+<script src="{{ url_for('static', filename="toastr/toastr.js") }}"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script> -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.8/socket.io.min.js"></script>
+
+<script>
+  FROMBACKEND = JSON.parse('{{ OBJ | tojson | safe}}');
+</script>
+<script type="text/javascript">
+  $(document).ready(function() {
+  
+    //$("#modal-novaLista").modal("show")
+  });
+  </script>
