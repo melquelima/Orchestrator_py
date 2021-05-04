@@ -31,8 +31,9 @@ def skt_refreshDash():
     print(data)
     socketio.emit("refreshDashboard",data)
 
-
-
+@socketio.on('forceRefreshDashBoard')
+def skt_forceRefreshDash():
+    skt_refreshDash()
 
 
 @socketio.on('message')

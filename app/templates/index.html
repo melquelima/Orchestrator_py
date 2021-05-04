@@ -18,6 +18,7 @@
 
 {% block content %}
 <div class="container-fluid" ng-controller="DashboardCtrl">
+  <button class="form-control" ng-click="refresh()">update</button>
     <!-- Small boxes (Stat box) -->
     <div class="row">
       {{smallBox("[{ FROMSOCKET.cadastrados }]","Robôs cadastrados","/asd","bg-info","ion-gear-b")}}

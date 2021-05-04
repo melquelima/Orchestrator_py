@@ -120,12 +120,9 @@ class Bot(db.Model):
             else:
                 png,timeout = wkng
 
-        tempo=    (now()-png).seconds #tempo desde o ultimo ping
+        tempo=    (now()-png).days*86400 + (now()-png).seconds #tempo desde o ultimo ping
         tmout=  datetime.combine(date.min,timeout) - datetime.min #convert to timedelta
         pingsts = tempo < tmout.seconds + time
-
-        if pingsts:
-            a = 1
 
         return pingsts
 

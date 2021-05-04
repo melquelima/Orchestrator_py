@@ -4,5 +4,6 @@ CORS_HEADERS = 'Content-Type'
 SECRET_KEY = "asdjkgasd$#43"
 SQLALCHEMY_ECHO = False
 SQLALCHEMY_DATABASE_URI = "sqlite:///storage.db"
+SQLALCHEMY_DATABASE_URI = "postgres://mfypepyiwdijkp:c27ded53bdc3de96e9bfec2250308ca4e90ee9c6838f9f448a5c1e5b2739ffd4@ec2-54-145-249-177.compute-1.amazonaws.com:5432/deu9bj7oqoeodq"
 UPLOAD_FOLDER = 'app\\static\\files'
 GEVENT_SUPPORT=True

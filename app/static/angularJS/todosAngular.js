@@ -363,14 +363,21 @@ app.controller('NotepadsCtrl', INCLUDES.concat([function (sc, $filter,$http,$sce
 
 }]));
 
+SOCKET = null
 app.controller('DashboardCtrl', INCLUDES.concat(['locador_svc',function (sc, $filter,$http,$sce,api_service,locador_svc){
     sc.FROMSOCKET = {cadastrados:0,online:0,offline:0}
     socket = io();
+    SOCKET = socket
 
     socket.on('refreshDashboard', function(msg) {
       sc.FROMSOCKET = msg
       sc.$apply();
     });
+    socket.on('disconnect', function(msg) {
+        print("caiu")
+    });
+
+    sc.refresh = ()=> socket.emit("forceRefreshDashBoard")
 
     socket.emit("refreshDashboard")
 
@@ -617,4 +624,12 @@ function getDate(){
 
     today = dd + '/' + mm + '/' + yyyy;
     return today
+}
+
+var tryReconnect = function(){
+
+    if (socketClient.connected === false) {
+        // use a connect() or reconnect() here if you want
+        socketClient.socket.connect()
+   }
 }
