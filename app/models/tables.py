@@ -2,6 +2,7 @@ from app import db,ma
 from sqlalchemy import Column,Integer,String,ForeignKey,DateTime,Time,Boolean
 from marshmallow import Schema, fields, pprint
 from datetime import datetime,date,timedelta
+from flask_login import UserMixin
 from app.models.timenow import now
 
 class Enviorment(db.Model):
@@ -19,13 +20,23 @@ class Enviorment(db.Model):
             db.session.commit()
     def __repr__(self):
         return "<Env %r>" % self.envName
+    def save(self):
+        if not self.id:
+            db.session.add(self)
+        db.session.commit()
 
-class Users(db.Model):
+    def delete(self):
+        db.session.rollback()
+        db.session.delete(self)
+        db.session.commit()
+
+
+class Users(db.Model, UserMixin):
     __tablename__ = "users"
 
     id = Column(Integer,primary_key=True)
-    userName = Column(String,unique=True)
-    password = Column(String)
+    userName = Column(String(50),unique=True)
+    password = Column(String(500))
     admin = Column(Boolean)
 
     def __init__(self,userName,password):
@@ -43,25 +54,21 @@ class Users(db.Model):
 
     def __repr__(self):
         return "<User %r>" % self.userName
+    def save(self):
+        if not self.id:
+            db.session.add(self)
+        db.session.commit()
 
-    @property
-    def is_authenticated(self):
-        return True
-    @property
-    def is_active(self):
-        return True
-    @property
-    def is_anonymous(self):
-        return False
-    
-    def get_id(self):
-        return str(self.id)
+    def delete(self):
+        db.session.rollback()
+        db.session.delete(self)
+        db.session.commit()    
 
 class Bot(db.Model):
     __tablename__ = "bot"
 
     id = Column(Integer,primary_key=True)
-    botName =   Column(String,unique=True)
+    botName =   Column(String(50),unique=True)
     id_Env =    Column(Integer,ForeignKey('Enviorment.id'))
     envName =   db.relationship("Enviorment",foreign_keys=id_Env)
     ping =      Column(DateTime)
@@ -85,7 +92,7 @@ class Bot(db.Model):
         self.idChat = idChat
 
     def save(self):
-        if self.id:
+        if not self.id:
             db.session.add(self)
         db.session.commit()
 
@@ -150,7 +157,7 @@ class Type(db.Model):
     __tablename__ = "type"
 
     id = Column(Integer,primary_key=True)
-    description = Column(String,unique=True)
+    description = Column(String(5000),unique=True)
 
     def __init__(self,description):
         self.description = description
@@ -226,7 +233,7 @@ class Notepad(db.Model):
 
     id = Column(Integer,primary_key=True)
     id_bot = Column(Integer,ForeignKey('bot.id'))
-    name =   Column(String,unique=True,nullable=False)
+    name =   Column(String(50),unique=True,nullable=False)
     text =  Column(String)
     bot = db.relationship("Bot",foreign_keys=id_bot)
     
@@ -271,7 +278,7 @@ class BotSchema(ma.Schema):
     working = fields.String()
     descricao = fields.String()
     flagOff = fields.Boolean()
-    token = fields.String()
+    #token = fields.String()
 
     
 

@@ -79,14 +79,20 @@ p:focus {
             </div>
           </div>
           
-          {{fields.loading(ng_show = "loading")}}
-          {{fields.empty(ng_show="!notepads.length && !loading")}}
+          {{fields.loading(ng_show = "loadingBots && loadingNotepads")}}
+          {{fields.empty(ng_show="!notepads.length && !(loadingBots && loadingNotepads)")}}
 
           <ul class="list-group list-group-flush ng-cloak" ng-show="notepads.length">
 
-            <li class="list-group-item" ng-repeat="list in notepads" ng-click="select(list)">
+            <li class="list-group-item" ng-click="">
               <span>
-                <i class="fa fa-pencil-square-o"></i> [{list.name}] <span class="fa fa-trash pull-right"></span>
+                {{fields.selectTag("Selecione um Bot","x.botName for x in bots","selectedBot")}}
+              </span>
+            </li>
+
+            <li class="list-group-item" ng-repeat="list in notepads | filterJson :'bot.botName':selectedBot.botName" ng-click="select(list)">
+              <span>
+                <i class="fa fa-pencil-square-o"></i> <b>[{list.bot.botName}]</b>[{" - " + list.name}] <span class="fa fa-trash pull-right"></span>
               </span>
             </li>
             <li class="list-group-item" style="text-align:center">

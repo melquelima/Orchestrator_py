@@ -68,6 +68,13 @@ Sem registros
 </div>
 {% endmacro %}
 
+{% macro selectTag(default,options,ng_model) %}
+    <select class="form-control" ng-options="{{ options }}" ng-model="{{ ng_model }}">
+      <option value="">{{ default }}</option>
+    </select>
+{% endmacro %}
+
+
 {% macro pwdField(size,name,placeholder,ng_model) %}
 <div class="col-sm-{{size}}">
     <div class="form-group">

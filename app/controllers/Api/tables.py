@@ -86,12 +86,3 @@ def env(id=None):
 
     return jsonify(mallowList(EnvSchema,bt))
 
-@app.route('/api/tbl_status')
-def status():
-    sc = StatusSchema()
-    id = request.args.get('id')
-    if id is None:
-        en = Status.query.all()
-    else:
-        en = [Status.query.get(str(id))]
-    return {"Status":[json.loads(sc.dumps(x)) for x in en if sc.dumps(x) != '{}']}

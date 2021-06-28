@@ -325,14 +325,19 @@ app.controller('NovoBotCtrl', INCLUDES.concat(['tema_svc',function (sc, $filter,
 
 app.controller('NotepadsCtrl', INCLUDES.concat([function (sc, $filter,$http,$sce,api_service){
     sc.notepads = []
-    sc.loading = true
     sc.selected = {}
     sc.loadingSalvar = false
+    sc.loadingNotepads = false
+    sc.loadingBots = false
+    sc.bots = []
 
     //api_service.getLogs().then((r)=>sc.logs = r)
     sc.updateNotepads = ()=>{
-        sc.loading = true
-        api_service.getNotepads().then((r)=>{sc.notepads = r;sc.loading=false})
+        sc.loadingBots = true
+        sc.loadingNotepads = true
+        api_service.getNotepads().then((r)=>{sc.notepads = r;sc.loadingNotepads=false;print(sc.notepads);})
+        api_service.getBots().then((r)=>{sc.bots = r;sc.loadingBots = false})
+
     }
 
     sc.select =(item)=>{
@@ -360,6 +365,7 @@ app.controller('NotepadsCtrl', INCLUDES.concat([function (sc, $filter,$http,$sce
     }
 
     sc.updateNotepads()
+    
 
 }]));
 
@@ -581,6 +587,8 @@ app.controller('CarregarCtrl', INCLUDES.concat([function (sc, $filter,$http,$sce
 app.filter('filterJson', function () {
 
     var x = function (original, campo,valor) {
+        if(valor=='undefined' || valor == null)
+            return original;
         lst = original.filter(function(a){if(eval("a." + campo) == valor){return eval("a." + campo)}})
         return lst;
     };

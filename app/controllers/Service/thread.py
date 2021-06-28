@@ -14,7 +14,7 @@ import atexit
 #t.start()
 
 #Thread(target=logStatus).start()
-cron = Scheduler(daemon=True)
+cron = Scheduler(daemon=True,max_instances=10)
 # Explicitly kick off the background thread
 cron.start()
 
@@ -42,7 +42,7 @@ def onceWhenOffline(**args):
     skt_refreshDash()
 
 
-@cron.interval_schedule(seconds=5)
+#@cron.interval_schedule(seconds=5)
 def logStatus():
     sts = Bot.query.filter(Bot.ping.isnot(None)).all()
 
@@ -67,7 +67,6 @@ def logStatus():
         #         if lg:lg.backAt = now()
         #         if en.idChat: Telbot.sendMessage(en.idChat,f'Bot "{en.botName}" online!')
             
-
 
 
 # Shutdown your cron thread if the web process is stopped
