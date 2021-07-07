@@ -92,6 +92,7 @@ def countProcess(item,fields):
 def notepad(fields):
     valid = validate_field2(Notepad,fields['name'],field='name')
     if not valid[0]: return valid[1]
+    valid[0].text = "" if valid[0].text is None else valid[0].text
     valid[0].text = valid[0].text + "\n" + fields["text"]
     valid[0].save()
     return "OK"

@@ -48,7 +48,7 @@ def addLog(bt,tp,exception):
         if not bt: return False, f"bot '{bt}' not found!"
 
     #find log that corresponds to tp, it migth be type_id "4"(offline) or description "offline"
-    idLog = Type.query.filter(or_(Type.description==tp,Type.id==tp)).first()
+    idLog = Type.query.filter(or_(Type.description==tp,Type.id==4)).first()
     if not idLog:
         return False,f"type_id {tp} not found!"
 

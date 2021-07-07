@@ -263,7 +263,7 @@ app.controller('TodasCtrl', INCLUDES.concat(['tema_svc',function (sc, $filter,$h
     sc.updateToken = ()=>{
         sc.tokenLoading=true
 
-        api_service.updateToken({id:1}).then((r)=>{
+        api_service.updateToken({id:sc.Selected.id}).then((r)=>{
             sc.token = r
             sc.tokenLoading=false
         }).catch((r)=>sc.tokenLoading=false)

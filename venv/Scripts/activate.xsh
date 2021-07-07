@@ -28,7 +28,7 @@ def _deactivate(args):
 _deactivate(["nondestructive"])
 aliases["deactivate"] = _deactivate
 
-$VIRTUAL_ENV = r"F:\Git\Python\Exemplos\Flask\aula\venv"
+$VIRTUAL_ENV = r"C:\Users\melque\Documents\Git\Orchestrator_py\venv"
 
 $_OLD_VIRTUAL_PATH = $PATH
 $PATH = $PATH[:]

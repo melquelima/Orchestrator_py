@@ -7,16 +7,18 @@ from app.models.timenow import now
 from app.controllers.Service.socket import skt_refreshDash
 import time
 from sqlalchemy import desc
-from apscheduler.scheduler import Scheduler
+#from apscheduler.scheduler import Scheduler
+from apscheduler.schedulers.background import BackgroundScheduler
 import atexit
 
 #t = AppContextThread(target=logStatus)
 #t.start()
 
 #Thread(target=logStatus).start()
-cron = Scheduler(daemon=True,max_instances=10)
+#cron = Scheduler(daemon=True,max_instances=10)
 # Explicitly kick off the background thread
-cron.start()
+#cron.start()
+
 
 #flagOff
  #    1 estava offline
@@ -42,7 +44,7 @@ def onceWhenOffline(**args):
     skt_refreshDash()
 
 
-#@cron.interval_schedule(seconds=5)
+#@cron.interval_schedule(seconds=10)
 def logStatus():
     sts = Bot.query.filter(Bot.ping.isnot(None)).all()
 
@@ -68,6 +70,8 @@ def logStatus():
         #         if en.idChat: Telbot.sendMessage(en.idChat,f'Bot "{en.botName}" online!')
             
 
-
+scheduler = BackgroundScheduler()
+scheduler.add_job(func=logStatus, trigger="interval", seconds=10,max_instances=5)
+scheduler.start()
 # Shutdown your cron thread if the web process is stopped
-atexit.register(lambda: cron.shutdown(wait=False))
+atexit.register(lambda: scheduler.shutdown(wait=False))
